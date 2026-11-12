@@ -9,7 +9,7 @@ stages:
       size: 2928
     - path: params.yaml
       hash: md5
-      md5: 232b8394cebc39eb90839ef5ec2eebea
+      md5: fae4283b020d7009dbdd73f52075c890
       size: 191
     - path: src/prepare.py
       hash: md5
@@ -18,26 +18,26 @@ stages:
     params:
       params.yaml:
         data.random_state: 42
-        data.test_size: 0.3
+        data.test_size: 0.2
     outs:
     - path: data/test.csv
       hash: md5
-      md5: e889e01ee9d1dd23c03ba514d7f8ff23
-      size: 933
+      md5: f62eb59ab49d79c725d3982a6309f855
+      size: 648
     - path: data/train.csv
       hash: md5
-      md5: ce48ecd296457ed4b432e841847ea085
-      size: 2073
+      md5: 2471b196482f8756104a193f2497d1e5
+      size: 2358
   train:
     cmd: python src/train.py --params params.yaml
     deps:
     - path: data/train.csv
       hash: md5
-      md5: ce48ecd296457ed4b432e841847ea085
-      size: 2073
+      md5: 2471b196482f8756104a193f2497d1e5
+      size: 2358
     - path: params.yaml
       hash: md5
-      md5: 232b8394cebc39eb90839ef5ec2eebea
+      md5: fae4283b020d7009dbdd73f52075c890
       size: 191
     - path: src/train.py
       hash: md5
@@ -54,22 +54,22 @@ stages:
     outs:
     - path: model/model.joblib
       hash: md5
-      md5: a73ffd87f2d25e6e6b0aa789346888c1
+      md5: 4651bbf71fcff0864fe124a32c5c5bb7
       size: 1311
   evaluate:
     cmd: python src/evaluate.py --params params.yaml
     deps:
     - path: data/test.csv
       hash: md5
-      md5: e889e01ee9d1dd23c03ba514d7f8ff23
-      size: 933
+      md5: f62eb59ab49d79c725d3982a6309f855
+      size: 648
     - path: model/model.joblib
       hash: md5
-      md5: a73ffd87f2d25e6e6b0aa789346888c1
+      md5: 4651bbf71fcff0864fe124a32c5c5bb7
       size: 1311
     - path: params.yaml
       hash: md5
-      md5: 232b8394cebc39eb90839ef5ec2eebea
+      md5: fae4283b020d7009dbdd73f52075c890
       size: 191
     - path: src/evaluate.py
       hash: md5
@@ -81,9 +81,9 @@ stages:
     outs:
     - path: metrics.json
       hash: md5
-      md5: e3d6d6f47f37e9228a1931d269ef8b26
+      md5: 186f390bebb73c51fdbc162fd7ff3f5c
       size: 150
     - path: predictions.csv
       hash: md5
-      md5: 42f10bb3f7262f326ffa311d9412be05
-      size: 1033
+      md5: f81e4ae5d9b57cc44961f2ab76665e3d
+      size: 718
