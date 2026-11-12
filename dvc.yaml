@@ -1,0 +1,39 @@
+stages:
+  prepare:
+    cmd: python src/prepare.py --params params.yaml
+    deps:
+      - src/prepare.py
+      - data/iris.csv
+      - params.yaml
+    params:
+      - data.test_size
+      - data.random_state
+    outs:
+      - data/train.csv
+      - data/test.csv
+
+  train:
+    cmd: python src/train.py --params params.yaml
+    deps:
+      - src/train.py
+      - data/train.csv
+      - params.yaml
+    params:
+      - model
+    outs:
+      - model/model.joblib
+
+  evaluate:
+    cmd: python src/evaluate.py --params params.yaml
+    deps:
+      - src/evaluate.py
+      - data/test.csv
+      - model/model.joblib
+      - params.yaml
+    params:
+      - evaluation.accuracy_threshold
+    outs:
+      - predictions.csv
+    metrics:
+      - metrics.json:
+          cache: false

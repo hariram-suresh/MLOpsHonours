@@ -1,0 +1,57 @@
+name: Iris experiment report
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  reproduce-and-report:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Recreate the DVC-tracked Iris source CSV
+        run: python src/prepare.py --generate-only
+
+      - name: Reproduce pipeline
+        run: dvc repro
+
+      - name: Create metrics report
+        env:
+          BASE_REF: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          printf '# Iris experiment results\n\n' > report.md
+          printf '## Current metrics\n\n```json\n' >> report.md
+          cat metrics.json >> report.md
+          printf '\n```\n\n' >> report.md
+          if [ -n "$BASE_REF" ] && git cat-file -e "$BASE_REF^{commit}" 2>/dev/null; then
+            printf '## Metrics diff vs base\n\n```\n' >> report.md
+            dvc metrics diff "$BASE_REF" -- HEAD >> report.md || true
+            printf '\n```\n\n## Parameter diff vs base\n\n```\n' >> report.md
+            dvc params diff "$BASE_REF" -- HEAD >> report.md || true
+            printf '\n```\n' >> report.md
+          fi
+
+      - name: Post report to pull request
+        if: github.event_name == 'pull_request'
+        uses: iterative/setup-cml@v2
+
+      - name: Publish CML comment
+        if: github.event_name == 'pull_request'
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: cml comment create report.md

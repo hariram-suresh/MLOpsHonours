@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# DVC cache and generated pipeline outputs
+.dvc/cache/
+/data/train.csv
+/data/test.csv
+/model/
+/predictions.csv
+/metrics.json
+
+# Local editor/OS files
+.vscode/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,89 @@
+schema: '2.0'
+stages:
+  prepare:
+    cmd: python src/prepare.py --params params.yaml
+    deps:
+    - path: data/iris.csv
+      hash: md5
+      md5: 21d441a28bce4417276097df955afc50
+      size: 2928
+    - path: params.yaml
+      hash: md5
+      md5: fae4283b020d7009dbdd73f52075c890
+      size: 191
+    - path: src/prepare.py
+      hash: md5
+      md5: c1f0a8bd4a61fe827908c02c55e46d2d
+      size: 2242
+    params:
+      params.yaml:
+        data.random_state: 42
+        data.test_size: 0.2
+    outs:
+    - path: data/test.csv
+      hash: md5
+      md5: f62eb59ab49d79c725d3982a6309f855
+      size: 648
+    - path: data/train.csv
+      hash: md5
+      md5: 2471b196482f8756104a193f2497d1e5
+      size: 2358
+  train:
+    cmd: python src/train.py --params params.yaml
+    deps:
+    - path: data/train.csv
+      hash: md5
+      md5: 2471b196482f8756104a193f2497d1e5
+      size: 2358
+    - path: params.yaml
+      hash: md5
+      md5: fae4283b020d7009dbdd73f52075c890
+      size: 191
+    - path: src/train.py
+      hash: md5
+      md5: 25dffe8ce2af433f33799916bb1ec235
+      size: 1794
+    params:
+      params.yaml:
+        model:
+          type: logistic_regression
+          random_state: 42
+          C: 1.0
+          max_iter: 500
+          max_depth: 4
+    outs:
+    - path: model/model.joblib
+      hash: md5
+      md5: 4651bbf71fcff0864fe124a32c5c5bb7
+      size: 1311
+  evaluate:
+    cmd: python src/evaluate.py --params params.yaml
+    deps:
+    - path: data/test.csv
+      hash: md5
+      md5: f62eb59ab49d79c725d3982a6309f855
+      size: 648
+    - path: model/model.joblib
+      hash: md5
+      md5: 4651bbf71fcff0864fe124a32c5c5bb7
+      size: 1311
+    - path: params.yaml
+      hash: md5
+      md5: fae4283b020d7009dbdd73f52075c890
+      size: 191
+    - path: src/evaluate.py
+      hash: md5
+      md5: c6c2ec62f46d9b56ebaf0a6e85657fbe
+      size: 1739
+    params:
+      params.yaml:
+        evaluation.accuracy_threshold: 0.9
+    outs:
+    - path: metrics.json
+      hash: md5
+      md5: 186f390bebb73c51fdbc162fd7ff3f5c
+      size: 150
+    - path: predictions.csv
+      hash: md5
+      md5: f81e4ae5d9b57cc44961f2ab76665e3d
+      size: 718
