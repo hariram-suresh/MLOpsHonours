@@ -13,7 +13,6 @@ venv/
 /data/test.csv
 /model/
 /predictions.csv
-/metrics.json
 
 # Local editor/OS files
 .vscode/
