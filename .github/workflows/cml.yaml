@@ -14,6 +14,8 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -40,9 +42,9 @@ jobs:
           printf '\n```\n\n' >> report.md
           if [ -n "$BASE_REF" ] && git cat-file -e "$BASE_REF^{commit}" 2>/dev/null; then
             printf '## Metrics diff vs base\n\n```\n' >> report.md
-            dvc metrics diff "$BASE_REF" -- HEAD >> report.md || true
+            dvc metrics diff "$BASE_REF" >> report.md || true
             printf '\n```\n\n## Parameter diff vs base\n\n```\n' >> report.md
-            dvc params diff "$BASE_REF" -- HEAD >> report.md || true
+            dvc params diff "$BASE_REF" >> report.md || true
             printf '\n```\n' >> report.md
           fi
 
